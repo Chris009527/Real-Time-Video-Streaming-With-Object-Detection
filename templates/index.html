@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Flask</title>
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+  <script src="//code.jquery.com/jquery-1.9.1.js"></script>
+  <script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+</head>
+<body>
+  <h3>Camera Live Streaming</h3>
+  <!-- <button type="button" id="1080p">1080p</button> -->
+  <button type="button" id="720p">720p</button>
+  <button type="button" id="480p">480p</button>
+  <button type="button" id="360p">360p</button>
+  <button type="button" id="grey">grey</button>
+  <br />
+  <button type="button" id="pause">pause</button>
+  <br />
+  <input id="detection_item" type="text" />
+  <button id="detection_submit" type="button">submit</button>
+  <br />
+  <img id="video" src="{{ url_for('video_feed', width=480, item='all') }}" width="1280" height="720">
+  <!-- <video width="1280" height="720" controls>
+    <source src="{{ url_for('video_feed', width=480) }}" />
+    Not support!
+  </video> -->
+
+  <script>
+    $(document).ready(function() {
+      var items = ["all"];
+      var width = 480;
+      var grey = 0;
+
+      set_img_src = function() {
+        new_url = `/video_feed?width=${width}&grey=${grey}`;
+        for (let i = 0; i < items.length; i++) {
+          new_url += `&item=${items[i]}`
+        }
+
+        console.log(new_url);
+        $("#video").attr("src", new_url);
+      };
+
+      $("#detection_submit").click(function() {
+        let det = $("#detection_item").val().trim();
+        if(det.length == 0) {
+          items = ["all"];
+        }
+        else{
+          items = det.trim().split(" ").filter(Boolean);
+        }
+        
+        set_img_src();
+      });
+
+      $("#360p").click(function(){
+        width = 360;
+        set_img_src();
+    }); 
+
+      $("#720p").click(function(){
+        width = 720;
+        set_img_src();
+    }); 
+
+      $("#480p").click(function(){
+        width = 480;
+        set_img_src();
+    }); 
+
+    $("#grey").click(function(){
+      if(grey == 1){
+        grey = 0;
+      }
+      else{
+        grey = 1;
+      }
+        set_img_src();
+    }); 
+
+      $("#pause").click(function(){
+          $("#video").attr("src", "");
+    }); 
+});
+  </script>
+
+</body>
+</html>
